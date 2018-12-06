@@ -39,7 +39,7 @@ def skull_strip_all():
                         log_errors.append([image, "out of shape"])
 
     log_path = os.path.join(root, '3D-Convnet-for-Alzheimer-s-Detection/3D_CNN/Data/skullstrip_errors.csv')
-    with open(log_path, 'w', newline='') as writeFile:
+    with open(log_path, 'rw', newline='') as writeFile:
         writer = csv.writer(writeFile)
         writer.writerows(error for error in log_errors)
 

@@ -22,7 +22,7 @@ if platform=='win32':
 else: root='/home/ubuntu'
 
 #Read Patient Data
-PD_Path=os.path.join(root,'3D-Convnet-for-Alzheimer-s-Detection/3D_CNN/data')
+PD_Path=os.path.join(root,'MRI_CNN/3D_CNN/data')
 train_list=getdata(PD_Path,'train_data.csv')
 test_list=getdata(PD_Path,'test_data.csv')
 denom=len(train_list)+len(test_list)
