@@ -43,7 +43,7 @@ for list in [train_list,test_list]:
         if int(float(label)) == 0:
             labelar = np.array([1, 0, 0])
         elif int(float(label)) >= 2:
-            labelar = np.array([0, 0, 1])
+            labelar = np.array([0, 1, 0])
         else:
             labelar = np.array([0, 0, 1])
 
@@ -115,6 +115,6 @@ for type in ['train','test']:
             img[0][0]=(img[0][0]-nummean)/nummax #normalisation(x-mean/max value)
             num+=1
             print(num,' of',denom, ' is normalized')
-            np.savez_compressed(file[0], data=img)
+            np.savez_compressed(file_name, data=img)
         except:
             print(file[0],' could not be normalized')
