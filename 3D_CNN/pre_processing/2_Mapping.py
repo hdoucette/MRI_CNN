@@ -31,12 +31,12 @@ for file in os.listdir(os.path.join(file_path)):
 
 train, test = train_test_split(image_paths, test_size=0.2)
 
-train_path=os.path.join(root,'MRI_CNN/3D_CNN/Data/train_data.csv')
+train_path=os.path.join(root,'MRI_CNN/3D_CNN/data/train_data.csv')
 with open(train_path, 'w',newline= '') as writeFile:
      writer = csv.writer(writeFile)
      writer.writerows(path for path in train)
 
-test_path=os.path.join(root,'MRI_CNN/3D_CNN/Data/test_data.csv')
+test_path=os.path.join(root,'MRI_CNN/3D_CNN/data/test_data.csv')
 with open(test_path, 'w',newline= '') as writeFile:
      writer = csv.writer(writeFile)
      writer.writerows(path for path in test)
