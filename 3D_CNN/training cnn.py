@@ -1,11 +1,18 @@
 import os
-import tensorflow as tf
-import tflearn
-import numpy as np
 import csv
 from sys import platform
-import skimage
-from skimage import transform
+import torch
+import dataset
+import gc
+from torch.autograd import Variable
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import torch.optim.lr_scheduler
+from CNN_Model import *
+
+torch.backends.cudnn.benchmark=True
+
 
 def traindata(file_path):
     with open(file_path, 'r') as f:
@@ -18,66 +25,63 @@ if platform=='win32':
 else: root='/home/ubuntu'
 
 #Get paths
-PD_Path=os.path.join(root,'oasis-scripts')
-label_path=os.path.join(PD_Path,'train_data.csv')
-train_data=traindata(label_path)
+PD_Path=os.path.join(root,'MRI_CNN/3D_CNN/data')
+data_path=os.path.join(PD_Path,'train_data.csv')
+train_data=traindata(data_path)
 
-datanp=[]                               #images
-truenp=[]                               #labels
 
-count=0
-denom=len(train_data)
-for row in train_data:
-    try:
-        data=np.load(row[0]+'.npz')
-        data=data['data']
-        img=data[0][0]
-        if img.shape==(176, 256, 256):
-            datanp.append(img)
-            truenp.append(data[0][1])
-        else:
-            count=count+1
-            print(count," of",denom," eliminated from set")
-    except:
-        print(row[0],"not loaded")
-        count = count+1
-        print('exception ',count, " of", denom, " eliminated from set")
-datanp=np.array(datanp)
-truenp=np.array(truenp)
-sh=datanp.shape
-#
-tf.reset_default_graph()
-net = tflearn.input_data(shape=[None,sh[0], sh[1], sh[2],sh[3]])
-#when more training data is known, change 1 to 5
-net = tflearn.conv_3d(net,16,5,strides=2,activation='leaky_relu', padding='VALID',weights_init='xavier',regularizer='L2',weight_decay=0.01)
-#Change kernel size from 1 to 3
-net = tflearn.max_pool_3d(net, kernel_size = 3, strides=2, padding='VALID')
-net = tflearn.conv_3d(net, 32,3,strides=2, padding='VALID',weights_init='xavier',regularizer='L2',weight_decay=0.01)
-net = tflearn.normalization.batch_normalization(net)
-net = tflearn.activations.leaky_relu (net)
-#kernel size from 1 to 2
-net = tflearn.max_pool_3d(net, kernel_size = 2, strides=2, padding='VALID')
+def run():
+    # Parameters
+    num_epochs = 10
+    output_period = 100
+    batch_size = 1
 
-net = tflearn.dropout(net,0.5)
-net = tflearn.fully_connected(net, 1024,weights_init='xavier',regularizer='L2')
-net = tflearn.normalization.batch_normalization(net,gamma=1.1,beta=0.1)
-net = tflearn.activations.leaky_relu (net)
-net = tflearn.dropout(net,0.6)
-net = tflearn.fully_connected(net, 512,weights_init='xavier',regularizer='L2')
-net = tflearn.normalization.batch_normalization(net,gamma=1.2,beta=0.2)
-net = tflearn.activations.leaky_relu (net)
-net = tflearn.dropout(net,0.7)
-net = tflearn.fully_connected(net, 128,weights_init='xavier',regularizer='L2')
-net = tflearn.normalization.batch_normalization(net,gamma=1.4,beta=0.4)
-net = tflearn.activations.leaky_relu (net)
-net = tflearn.dropout(net,0.7)
-net = tflearn.fully_connected(net, 3,weights_init='xavier',regularizer='L2')
-net = tflearn.normalization.batch_normalization(net,gamma=1.3,beta=0.3)
-net = tflearn.activations.softmax(net)
-net = tflearn.regression(net, optimizer='adam', learning_rate=0.001, loss='categorical_crossentropy')
-model = tflearn.DNN(net, checkpoint_path = os.path.join(root,'model.tfl.ckpt'),max_checkpoints=3)                      #model definition
-#
-ckpt=root
-# model.load(ckpt) #loading checkpoints
-#
-# model.fit(datanp, truenp, batch_size = 8, show_metric=True)   #training with batch size of 8
+    # setup the device for running
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    model = MRI_CNN()
+    model = model.to(device)
+
+    train_loader = dataset.get_data_loaders(batch_size)
+    num_train_batches = len(train_loader)
+
+    criterion = nn.CrossEntropyLoss().to(device)
+
+    # TODO: May Need adjustment
+    optimizer = optim.Adam(model.parameters(), lr=1e-3, weight_decay=.01)
+    scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[7, 12], gamma=0.1)
+
+    epoch = 1
+    while epoch <= num_epochs:
+        running_loss = 0.0
+        for param_group in optimizer.param_groups:
+            print('Current learning rate: ' + str(param_group['lr']))
+        model.train()
+
+        for batch_num, (inputs, labels) in enumerate(train_loader, 1):
+            inputs = inputs.to(device)
+            labels = labels.to(device)
+
+            optimizer.zero_grad()
+            outputs = model(inputs)
+            loss = criterion(outputs, labels)
+            loss.backward()
+
+            optimizer.step()
+            running_loss += loss.item()
+
+            if batch_num % output_period == 0:
+                print('[%d:%.2f] loss: %.3f' % (
+                    epoch, batch_num*1.0/num_train_batches,
+                    running_loss/output_period
+                    ))
+                running_loss = 0.0
+                gc.collect()
+
+        gc.collect()
+        # save after every epoch
+        torch.save(model.state_dict(), "models/model.%d" % epoch)
+
+
+print('Starting training')
+run()
+print('Training terminated')
