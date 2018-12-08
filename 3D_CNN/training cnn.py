@@ -44,6 +44,8 @@ def run():
     train_loader = dataset.get_data_loaders(batch_size)
     num_train_batches = len(train_loader)
 
+    print("Enumerate",enumerate(train_loader, 0))
+
     criterion = nn.CrossEntropyLoss().to(device)
 
     # TODO: May Need adjustment
@@ -57,7 +59,7 @@ def run():
             print('Current learning rate: ' + str(param_group['lr']))
         model.train()
 
-        for batch_num, (inputs, labels) in enumerate(train_loader, 1):
+        for batch_num, (inputs, labels) in enumerate(train_loader, 0):
             inputs = inputs.to(device)
             labels = labels.to(device)
 

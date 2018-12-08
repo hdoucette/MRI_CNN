@@ -41,7 +41,7 @@ else:
                 print('saved', i)
                 i += 1
 
-print(tensor_x.shape,tensor_y.shape)
+#print(tensor_x.shape,tensor_y.shape)
 train_dataset=utils.TensorDataset(tensor_x,tensor_y)
 
 def get_data_loaders(batch_size):
