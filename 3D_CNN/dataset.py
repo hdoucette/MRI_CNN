@@ -24,7 +24,7 @@ if torch.cuda.is_available():
             tensor_x = torch.cat((tensor_x, tensor_x2), dim=0).to(device)
             tensor_y = torch.cat((tensor_y, tensor_y2.float()), dim=0).to(device)
         i+=1
-
+        print(i)
 else:
     for file in os.listdir(train_root):
         mri=np.load(os.path.join(train_root,file))
