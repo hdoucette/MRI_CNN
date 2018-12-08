@@ -29,7 +29,6 @@ PD_Path=os.path.join(root,'MRI_CNN/3D_CNN/data')
 data_path=os.path.join(PD_Path,'train_data.csv')
 train_data=traindata(data_path)
 
-
 def run():
     # Parameters
     num_epochs = 10
@@ -43,9 +42,6 @@ def run():
 
     train_loader = dataset.get_data_loaders(batch_size)
     num_train_batches = len(train_loader)
-
-    print("Enumerate",enumerate(train_loader, 0))
-
     criterion = nn.CrossEntropyLoss().to(device)
 
     # TODO: May Need adjustment
@@ -62,7 +58,6 @@ def run():
         for batch_num, (inputs, labels) in enumerate(train_loader, 0):
             inputs = inputs.to(device)
             labels = labels.to(device)
-
             optimizer.zero_grad()
             outputs = model(inputs)
             loss = criterion(outputs, labels)
@@ -70,7 +65,6 @@ def run():
 
             optimizer.step()
             running_loss += loss.item()
-
             if batch_num % output_period == 0:
                 print('[%d:%.2f] loss: %.3f' % (
                     epoch, batch_num*1.0/num_train_batches,
@@ -78,10 +72,9 @@ def run():
                     ))
                 running_loss = 0.0
                 gc.collect()
-
         gc.collect()
         # save after every epoch
-        torch.save(model.state_dict(), "models/model.%d" % epoch)
+        torch.save(model.state_dict(), "Model/model.%d" % epoch)
 
 
 print('Starting training')

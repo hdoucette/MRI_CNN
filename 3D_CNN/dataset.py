@@ -28,16 +28,16 @@ else:
         mri=np.load(os.path.join(train_root,file))
         mri=mri['data']
         if i==0 and mri[0][0].shape==(176, 256, 256):
-            tensor_x=torch.from_numpy(np.expand_dims(mri[0][0],axis=0)).to(device)
-            tensor_y = torch.from_numpy(np.expand_dims(mri[0][1],axis=0)).float().to(device)
+            tensor_x=torch.from_numpy(np.expand_dims(mri[0][0],axis=0))
+            tensor_y = torch.from_numpy(np.expand_dims(mri[0][1],axis=0)).float()
             print('saved',i)
             i += 1
         else:
             if mri[0][0].shape==(176, 256, 256):
-                tensor_x2=torch.from_numpy(np.expand_dims(mri[0][0],axis=0)).to(device)
-                tensor_y2=torch.from_numpy(np.expand_dims(mri[0][1], axis=0)).to(device)
-                tensor_x = torch.cat((tensor_x,tensor_x2),dim=0).to(device)
-                tensor_y = torch.cat((tensor_y,tensor_y2.float()),dim=0).to(device)
+                tensor_x2=torch.from_numpy(np.expand_dims(mri[0][0],axis=0))
+                tensor_y2=torch.from_numpy(np.expand_dims(mri[0][1], axis=0))
+                tensor_x = torch.cat((tensor_x,tensor_x2),dim=0)
+                tensor_y = torch.cat((tensor_y,tensor_y2.float()),dim=0)
                 print('saved', i)
                 i += 1
 
@@ -46,8 +46,8 @@ train_dataset=utils.TensorDataset(tensor_x,tensor_y)
 
 def get_data_loaders(batch_size):
     train_loader = torch.utils.data.DataLoader(
-            train_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
-    return (train_loader)
+            train_dataset, batch_size=batch_size, shuffle=False, num_workers=4)
+    return train_loader
 
 # def get_test_test_loaders(batch_size):
 #     test_loader = torch.utils.data.DataLoader(
