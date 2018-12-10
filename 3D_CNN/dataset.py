@@ -23,7 +23,7 @@ class DataLoader(object):
                 if num==0:
                     sample_x=np.expand_dims(sample[0][0],0)
                     sample_y = np.expand_dims(sample[0][1], 0)
-                    np.save_compressed(os.path.join(data_root, 'mris_all_{0}'.format(dataset)),
+                    np.savez_compressed(os.path.join(data_root, 'mris_all_{0}'.format(dataset)),
                                         data=sample_x, labels=sample_y)
 
                 else:
