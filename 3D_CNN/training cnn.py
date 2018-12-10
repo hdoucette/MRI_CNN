@@ -21,7 +21,7 @@ else: root='/home/ubuntu'
 #Get paths
 PD_Path=os.path.join(root,'MRI_CNN/3D_CNN/data')
 
-x,y=DataLoader.load_testing(dataset='train', records=100)
+x,y=DataLoader.load_testing(dataset='train', records=500)
 
 def run():
     # Parameters
@@ -31,7 +31,7 @@ def run():
 
     # setup the device for running
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    model = MRI_CNN()
+    model = MRI_CNN
     model = model.to(device)
 
     criterion = nn.CrossEntropyLoss().to(device)
@@ -50,7 +50,6 @@ def run():
         model.train()
 
         for batch_num,(inputs, labels) in DataLoader.batch_data(x, y, batch_size):
-            print(batch_num)
             inputs=torch.from_numpy(inputs)
             labels=torch.from_numpy(labels)
             inputs = inputs.unsqueeze(1).to(device)
