@@ -18,7 +18,7 @@ if platform=='win32':
 else: root='/home/ubuntu'
 
 #Read Patient Data
-PD_Path=os.path.join(root,'oasis-scripts')
+PD_Path=os.path.join(root,'MRI_CNN/3D_CNN/data')
 train_list=traindata(PD_Path,'train_data.csv')
 
 
@@ -63,4 +63,9 @@ def segmentation_Threshholding(img_dir):  #image directory
     print('threshold1 = ',threshold1)
     print('threshold2 = ',threshold2)
 
-segmentation_Threshholding(train_list[1][0])
+segmentation_Threshholding(train_list[69][0])
+
+num=0
+# for i in train_list:
+#     print(num,i[2])
+#     num=num+1

@@ -30,15 +30,15 @@ class MRI_CNN(nn.Module):
             nn.Dropout(.5))
         self.classifier=nn.Sequential(nn.Linear(72000,1024),
             nn.LeakyReLU(inplace=True),
-            nn.Dropout(.6),
+            nn.Dropout(.5),
             nn.Linear(1024,512),
             nn.BatchNorm1d(512),
             nn.LeakyReLU(inplace=False),
-            nn.Dropout(.7),
+            nn.Dropout(.5),
             nn.Linear(512,128),
             nn.BatchNorm1d(128),
             nn.LeakyReLU(inplace=False),
-            nn.Dropout(.7),
+            nn.Dropout(.5),
             nn.Linear(128,3),
             nn.BatchNorm1d(3),
             nn.Softmax())

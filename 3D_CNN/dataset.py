@@ -18,7 +18,6 @@ class DataLoader(object):
         num=0
         denom=len(os.listdir(train_root)[0:records])
         for i in os.listdir(train_root)[0:records]:
-            print(i)
             sample=np.load(os.path.join(train_root,i))['data']
             if sample[0][0].shape==(176,256,256):
                 if num==0:
@@ -81,7 +80,7 @@ class DataLoader(object):
 
 
 # x,y=DataLoader.load_testing(dataset='train', records=-1)
-# print(y,y.shape)
+# print(y)
 
 
 # for batch_num, (data_batch, label_batch) in DataLoader.batch_data(x,y,5):

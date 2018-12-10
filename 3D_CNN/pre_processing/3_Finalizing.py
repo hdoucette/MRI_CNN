@@ -43,9 +43,9 @@ for list in [train_list,test_list]:
         if int(float(label)) == 0:
             labelar = np.array(0)
         elif int(float(label)) >= 2:
-            labelar = np.array(1)
-        else:
             labelar = np.array(2)
+        else:
+            labelar = np.array(1)
 
         # will be used for numpy object
         netdata=[]
