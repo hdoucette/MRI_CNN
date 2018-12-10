@@ -26,7 +26,7 @@ x,y=DataLoader.load_testing(dataset='train', records=100)
 def run():
     # Parameters
     num_epochs = 10
-    output_period = 10
+    output_period = 2
     batch_size = 5
 
     # setup the device for running
@@ -66,7 +66,7 @@ def run():
             #print('Running Loss:',running_loss)
             if batch_num % output_period == 0:
                 print('[%d:%.2f] loss: %.3f' % (
-                    epoch, batch_num*1.00/(len(x)),
+                    epoch, batch_num*1.00/(len(x)/batch_size),
                     running_loss/output_period
                     ))
                 running_loss = 0.0
