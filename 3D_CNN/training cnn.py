@@ -65,7 +65,7 @@ def run():
             #print('Running Loss:',running_loss)
             if batch_num % output_period == 0:
                 print('[%d:%.2f] loss: %.3f' % (
-                    epoch, batch_num*1.0/(len(x)),
+                    epoch, batch_num*1.00/(len(x)),
                     running_loss/output_period
                     ))
                 running_loss = 0.0
@@ -73,6 +73,7 @@ def run():
         gc.collect()
         # save after every epoch
         torch.save(model.state_dict(), "Model/model.%d" % epoch)
+        epoch=epoch+1
 
 
 print('Starting training')
