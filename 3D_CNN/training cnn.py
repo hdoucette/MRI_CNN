@@ -32,8 +32,8 @@ x,y=DataLoader.load_testing(dataset='train', records=-1)
 def run():
     # Parameters
     num_epochs = 10
-    output_period = 5
-    batch_size = 2
+    output_period = 10
+    batch_size = 10
 
     # setup the device for running
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
