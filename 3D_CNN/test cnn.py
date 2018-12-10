@@ -27,12 +27,12 @@ def load_model(model_name='MRI_CNN'):
     """load the pre-trained model"""
     try:
         model = MRI_CNN()
-        model_path = './Model/model.10'
+        model_path = './Model/model.30'
     except:
         raise NotImplementedError(model_name + ' is not implemented here')
 
     checkpoint = torch.load(model_path, map_location='cpu')
-    print(checkpoint)
+    #print(checkpoint)
     model.load_state_dict(checkpoint)
 
     return model

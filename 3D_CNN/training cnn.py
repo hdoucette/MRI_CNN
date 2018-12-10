@@ -44,42 +44,44 @@ def run():
     write_outputs=[]
     epoch_loss=[]
     epoch = 1
-    while epoch <= num_epochs:
-        running_loss = 0.0
-        for param_group in optimizer.param_groups:
-            print('Current learning rate: ' + str(param_group['lr']))
-        model.train()
-
-        for batch_num,(inputs, labels) in DataLoader.batch_data(x, y, batch_size):
-            inputs=torch.from_numpy(inputs)
-            labels=torch.from_numpy(labels)
-            inputs = inputs.unsqueeze(1).to(device)
-            labels = labels.long().to(device)
-            optimizer.zero_grad()
-            outputs = model(inputs)
-            loss = criterion(outputs,labels)
-
-            loss.backward()
-
-            optimizer.step()
-            running_loss += loss.item()
-            #print('Running Loss:',running_loss)
-            if batch_num % output_period == 0:
-                print('[%d:%.2f] loss: %.3f' % (
-                    epoch, batch_num*1.00/(len(x)/batch_size),
-                    running_loss/output_period
-                    ))
-                running_loss = 0.0
-                gc.collect()
-        epoch_loss.append([epoch,running_loss])
-        gc.collect()
-        # save after every epoch
-        torch.save(model.state_dict(), "Model/model.%d" % epoch)
-
-        epoch=epoch+1
-    csv_path=os.path.join(root,'MRI_CNN/3D_CNN/Model/epoch_loss.csv')
+    csv_path = os.path.join(root, 'MRI_CNN/3D_CNN/Model/epoch_loss.csv')
     with open(csv_path, 'w', newline='') as writeFile:
         writer = csv.writer(writeFile)
+        while epoch <= num_epochs:
+            running_loss = 0.0
+            for param_group in optimizer.param_groups:
+                print('Current learning rate: ' + str(param_group['lr']))
+            model.train()
+
+            for batch_num,(inputs, labels) in DataLoader.batch_data(x, y, batch_size):
+                inputs=torch.from_numpy(inputs)
+                labels=torch.from_numpy(labels)
+                inputs = inputs.unsqueeze(1).to(device)
+                labels = labels.long().to(device)
+                optimizer.zero_grad()
+                outputs = model(inputs)
+                weights = torch.Tensor([1.0, 5.0, 10.0])
+                loss = criterion(outputs,labels,weights)
+
+                loss.backward()
+
+                optimizer.step()
+                running_loss += loss.item()
+                #print('Running Loss:',running_loss)
+                if batch_num % output_period == 0:
+                    print('[%d:%.2f] loss: %.3f' % (
+                        epoch, batch_num*1.00/(len(x)/batch_size),
+                        running_loss/output_period
+                        ))
+                    running_loss = 0.0
+                    gc.collect()
+            epoch_loss.append([epoch,running_loss])
+            gc.collect()
+            # save after every epoch
+            torch.save(model.state_dict(), "Model/model.%d" % epoch)
+
+            epoch=epoch+1
+
         writer.writerows(line for line in loss)
 
 
