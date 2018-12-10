@@ -3,12 +3,12 @@ from torchvision import datasets, transforms
 import os
 import numpy as np
 import torch.utils.data as utils
+import tempfile
+from my_savez import mySavez
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 data_root = './data/'
-train_root = data_root + 'train'
-test_root = data_root + 'test'
 
 
 class DataLoader(object):
@@ -16,13 +16,16 @@ class DataLoader(object):
     @classmethod
     def concat(cls, dataset='train', records = -1):
         num=0
-        denom=len(os.listdir(train_root))
-        for i in os.listdir(train_root):
-            sample=np.load(os.path.join(train_root,i))['data']
+        denom=len(os.listdir(data_root+dataset))
+        for i in os.listdir(data_root+dataset):
+            sample=np.load(os.path.join(data_root+dataset,i))['data']
             if sample[0][0].shape==(176,256,256):
                 if num==0:
                     sample_x=np.expand_dims(sample[0][0],0)
                     sample_y = np.expand_dims(sample[0][1], 0)
+                    np.save_compressed(os.path.join(data_root, 'mris_all_{0}'.format(dataset)),
+                                        data=sample_x, labels=sample_y)
+
                 else:
                     sample_x2 = np.expand_dims(sample[0][0], 0)
                     sample_y2 = np.expand_dims(sample[0][1], 0)
@@ -41,7 +44,7 @@ class DataLoader(object):
         try:
             raw = np.load(data_root + '/mris_all_{0}.npz'.format(dataset), mmap_mode='r')
         except:
-            DataLoader.concat()
+            DataLoader.concat(dataset=dataset)
             raw = np.load(data_root + '/mris_all_{0}.npz'.format(dataset), mmap_mode='r')
         if records > 0:
             # additional logic for efficient caching of small subsets of records
@@ -79,8 +82,7 @@ class DataLoader(object):
                       train_labels[start:end])
 
 
-# x,y=DataLoader.load_testing(dataset='train', records=-1)
-# print(y,y.shape)
+# x=DataLoader.load(dataset='test', records=-1)
 
 
 # for batch_num, (data_batch, label_batch) in DataLoader.batch_data(x,y,5):
