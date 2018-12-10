@@ -41,11 +41,11 @@ for list in [train_list,test_list]:
         img_name=file[1]
         label=file[2]
         if int(float(label)) == 0:
-            labelar = np.array([1, 0, 0])
+            labelar = np.array(0)
         elif int(float(label)) >= 2:
-            labelar = np.array([0, 1, 0])
+            labelar = np.array(1)
         else:
-            labelar = np.array([0, 0, 1])
+            labelar = np.array(2)
 
         # will be used for numpy object
         netdata=[]

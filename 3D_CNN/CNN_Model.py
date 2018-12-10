@@ -27,23 +27,26 @@ class MRI_CNN(nn.Module):
             nn.BatchNorm3d(32),
             nn.LeakyReLU(inplace=False),
             nn.MaxPool3d(kernel_size=2, stride=2, padding=0),
-            nn.Dropout(.5),
-
-            nn.Linear(1024,512),
-            nn.LeakyReLU(inplace=False),
+            nn.Dropout(.5))
+        self.classifier=nn.Sequential(nn.Linear(72000,1024),
+            nn.LeakyReLU(inplace=True),
             nn.Dropout(.6),
+            nn.Linear(1024,512),
+            nn.BatchNorm1d(512),
+            nn.LeakyReLU(inplace=False),
+            nn.Dropout(.7),
             nn.Linear(512,128),
+            nn.BatchNorm1d(128),
             nn.LeakyReLU(inplace=False),
             nn.Dropout(.7),
             nn.Linear(128,3),
-            nn.LeakyReLU(inplace=False),
-            nn.Dropout(.7),
+            nn.BatchNorm1d(3),
             nn.Softmax())
 
     def forward(self, x):
         x = self.features(x)
-        #x = x.view(x.size(0), 1024)
-        # x = self.classifier(x)
+        x = x.view(x.size(0), 72000)
+        x = self.classifier(x)
         return x
 
 def CNN_Model():

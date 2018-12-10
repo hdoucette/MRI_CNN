@@ -10,48 +10,86 @@ data_root = './data/'
 train_root = data_root + 'train'
 test_root = data_root + 'test'
 
-i=0
-if torch.cuda.is_available():
-    for file in os.listdir(train_root):
-        mri=np.load(os.path.join(train_root,file))
-        mri=mri['data']
-        if i==0:
-            tensor_x=torch.from_numpy(np.expand_dims(mri[0][0],axis=0)).to(device)
-            tensor_y=torch.from_numpy(np.expand_dims(mri[0][1],axis=0)).float().to(device)
+
+class DataLoader(object):
+    data=[]
+    @classmethod
+    def concat(cls, dataset='train', records = -1):
+        num=0
+        denom=len(os.listdir(train_root))
+        for i in os.listdir(train_root):
+            sample=np.load(os.path.join(train_root,i))['data']
+            if sample[0][0].shape==(176,256,256):
+                if num==0:
+                    sample_x=np.expand_dims(sample[0][0],0)
+                    sample_y = np.expand_dims(sample[0][1], 0)
+                else:
+                    sample_x2 = np.expand_dims(sample[0][0], 0)
+                    sample_y2 = np.expand_dims(sample[0][1], 0)
+                    try:
+                        sample_y = np.concatenate((sample_y, sample_y2), axis=0)
+                        sample_x=np.concatenate((sample_x,sample_x2),axis=0)
+                    except:
+                        print('sample out of shape')
+                num+=1
+                print(num, ' of ',denom)
+        np.savez_compressed(os.path.join(data_root,'mris_all_{0}'.format(dataset)),
+                            data=sample_x,labels=sample_y)
+
+    @classmethod
+    def load(cls, dataset='train', records = -1):
+        try:
+            raw = np.load(data_root + '/mris_all_{0}.npz'.format(dataset), mmap_mode='r')
+        except:
+            DataLoader.concat()
+            raw = np.load(data_root + '/mris_all_{0}.npz'.format(dataset), mmap_mode='r')
+        if records > 0:
+            # additional logic for efficient caching of small subsets of records
+            raw_trunc = data_root + 'mris_all_{0}-n{1}.npz'.format(dataset,records)
+            if os.path.isfile(raw_trunc):
+                raw_x = np.load(raw_trunc, mmap_mode='r')['data']
+                raw_y = np.load(raw_trunc, mmap_mode='r')['labels']
+                return raw_x[0:records], raw_y[0:records]
+            else :
+                data, labels =  raw['data'][0:records], raw['labels'][0:records]
+                np.savez(raw_trunc, data=data, labels=labels)
+                return data, labels[:, 0], labels[:, 1]
         else:
-            tensor_x2 = torch.from_numpy(np.expand_dims(mri[0][0], axis=0)).to(device)
-            tensor_y2 = torch.from_numpy(np.expand_dims(mri[0][1], axis=0)).to(device)
-            tensor_x = torch.cat((tensor_x, tensor_x2), dim=0).to(device)
-            tensor_y = torch.cat((tensor_y, tensor_y2.float()), dim=0).to(device)
-        i+=1
-        print(i)
-else:
-    for file in os.listdir(train_root):
-        mri=np.load(os.path.join(train_root,file))
-        mri=mri['data']
-        if i==0 and mri[0][0].shape==(176, 256, 256):
-            tensor_x=torch.from_numpy(np.expand_dims(mri[0][0],axis=0))
-            tensor_y = torch.from_numpy(np.expand_dims(mri[0][1],axis=0)).float()
-            print('saved',i)
-            i += 1
-        else:
-            if mri[0][0].shape==(176, 256, 256):
-                tensor_x2=torch.from_numpy(np.expand_dims(mri[0][0],axis=0))
-                tensor_y2=torch.from_numpy(np.expand_dims(mri[0][1], axis=0))
-                tensor_x = torch.cat((tensor_x,tensor_x2),dim=0)
-                tensor_y = torch.cat((tensor_y,tensor_y2.float()),dim=0)
-                print('saved', i)
-                i += 1
+            return raw['data'], raw['labels']
 
-#print(tensor_x.shape,tensor_y.shape)
-train_dataset=utils.TensorDataset(tensor_x,tensor_y)
+    @classmethod
+    def load_training(cls, dataset='train', records=-1):
+        return DataLoader.load(dataset=dataset, records=records)
 
-def get_data_loaders(batch_size):
-    train_loader = torch.utils.data.DataLoader(
-            train_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
-    return train_loader
+    @classmethod
+    def load_testing(cls, dataset='test', records=-1):
+        return DataLoader.load(dataset=dataset, records=records)
 
-# def get_test_test_loaders(batch_size):
-#     test_loader = torch.utils.data.DataLoader(
-#             test_dataset, batch_size=batch_size, shuffle=False, num_workers=4)
-#     return (test_loader)
+    @classmethod
+    def batch_data(cls, train_data, train_labels, batch_size):
+        """ Simple sequential chunks of data """
+        for batch in range(int(np.ceil(train_data.shape[0] / batch_size))):
+            start = batch_size * batch
+            end = start + batch_size
+            if end > train_data.shape[0]:
+                yield batch, (train_data[-batch_size,:], \
+                      train_labels[-batch_size,:])
+            else:
+                yield batch, (train_data[start:end], \
+                      train_labels[start:end])
+
+
+# x,y=DataLoader.load_testing(dataset='train', records=-1)
+# print(y,y.shape)
+
+
+# for batch_num, (data_batch, label_batch) in DataLoader.batch_data(x,y,5):
+#      print(batch_num,data_batch.shape)
+
+# ##Test Visualization
+# import pre_processing.Visualisation
+# volume=x[0,:,:]
+# volume = (volume * 255 / np.max(volume)).astype('uint8')
+# multi_slice_viewer(volume)
+# #plt.imshow(volume[:,:,0],cmap='gray')
+# plt.show()

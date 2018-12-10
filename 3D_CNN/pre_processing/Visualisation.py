@@ -16,20 +16,20 @@ def multi_slice_viewer(volume):
     fig, ax = plt.subplots()
     ax.volume = volume
     ax.index =100
-    ax.imshow(volume[:, :, ax.index],cmap='gray')
+    ax.imshow(volume[:,:,ax.index],cmap='gray')
     fig.canvas.mpl_connect('key_press_event', process_key)
 
 def previous_slice(ax):
     """Go to the previous slice."""
     volume = ax.volume
     ax.index = (ax.index - 1) % volume.shape[0]  # wrap around using %
-    ax.images[0].set_array(volume[:, :, ax.index])
+    ax.images[0].set_array(volume[:,:,ax.index])
 
 def next_slice(ax):
     """Go to the next slice."""
     volume = ax.volume
     ax.index = (ax.index + 1) % (volume.shape[0])
-    ax.images[0].set_array(volume[:, :, ax.index])
+    ax.images[0].set_array(volume[:,:,ax.index])
 
 
 # Visualize .nii.gz file
@@ -45,7 +45,7 @@ def next_slice(ax):
 # # #Visualize numpy compressed file
 import numpy as np
 root='C:/Users\douce\Desktop\MIT Fall 2018/6.869 Machine Vision\Final Project/MRI_CNN/3D_CNN\data/train'
-file_name=root+'/sub-OAS30043_ses-d0145_T1w_stripped.nii.gz.npz'
+file_name=root+'/sub-OAS30065_ses-d2009_T1w_stripped.nii.gz.npz'
 print(type(file_name))
 img = np.load(file_name)
 img = img['data']
