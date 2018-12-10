@@ -50,6 +50,7 @@ def run():
         model.train()
 
         for batch_num,(inputs, labels) in DataLoader.batch_data(x, y, batch_size):
+            print(batch_num)
             inputs=torch.from_numpy(inputs)
             labels=torch.from_numpy(labels)
             inputs = inputs.unsqueeze(1).to(device)
