@@ -22,6 +22,7 @@ else: root='/home/ubuntu'
 PD_Path=os.path.join(root,'MRI_CNN/3D_CNN/data')
 
 x,y=DataLoader.load_testing(dataset='train', records=500)
+print(x.shape,y.shape)
 
 def run():
     # Parameters
