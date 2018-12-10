@@ -2,7 +2,7 @@ import os
 import tensorflow as tf
 import tflearn
 import numpy as np
-import sys
+from sys import platform
 from CNN_Model import *
 import torch
 import csv
@@ -23,6 +23,21 @@ def load_categories():
         categories.append(line)
     return categories
 
+def load_model(model_name='MRI_CNN'):
+    """load the pre-trained model"""
+    try:
+        model = MRI_CNN()
+        model_path = './Model/model.10'
+    except:
+        raise NotImplementedError(model_name + ' is not implemented here')
+
+    checkpoint = torch.load(model_path, map_location='cpu')
+    print(checkpoint)
+    model.load_state_dict(checkpoint)
+
+    return model
+
+
 def main():
     # load classification categories
     categories = load_categories()
@@ -31,7 +46,7 @@ def main():
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     # load model and set to evaluation mode
-    model=MRI_CNN()
+    model=load_model()
     model.to(device)
     model.eval()
 
@@ -55,6 +70,7 @@ def main():
 
                 # run the forward process
                 prediction = model(inputs)
+                print(prediction)
                 prediction = prediction.to(device)
                 _, cls = torch.max(prediction, dim=1)
 
