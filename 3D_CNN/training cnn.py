@@ -14,12 +14,6 @@ from CNN_Model import *
 torch.backends.cudnn.benchmark=True
 
 
-def traindata(file_path):
-    with open(file_path, 'r') as f:
-        reader = csv.reader(f)
-        data=list(reader)
-        return data
-
 if platform=='win32':
    root='C:/Users/douce/Desktop/MIT Fall 2018/6.869 Machine Vision/Final Project/'
 else: root='/home/ubuntu'
@@ -27,7 +21,7 @@ else: root='/home/ubuntu'
 #Get paths
 PD_Path=os.path.join(root,'MRI_CNN/3D_CNN/data')
 
-x,y=DataLoader.load_testing(dataset='train', records=-1)
+x,y=DataLoader.load_testing(dataset='train', records=400)
 
 def run():
     # Parameters
@@ -45,6 +39,8 @@ def run():
     # TODO: May Need adjustment
     optimizer = optim.Adam(model.parameters(), lr=1e-3, weight_decay=.01)
     scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[7, 12], gamma=0.1)
+
+    write_outputs=[]
 
     epoch = 1
     while epoch <= num_epochs:
