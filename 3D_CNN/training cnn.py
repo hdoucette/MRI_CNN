@@ -82,7 +82,7 @@ def run():
 
             epoch=epoch+1
 
-        writer.writerows(line for line in loss)
+        writer.writerows(line for line in epoch_loss)
 
 
 print('Starting training')
