@@ -45,17 +45,18 @@ def next_slice(ax):
 # # #Visualize numpy compressed file
 import numpy as np
 root='C:/Users\douce\Desktop\MIT Fall 2018/6.869 Machine Vision\Final Project/MRI_CNN/3D_CNN\data/train'
-file_name=root+'C:/Users\douce\Desktop\MIT Fall 2018/6.869 Machine Vision\Final Project/oasis-scripts/scans/OAS30065_MR_d2009/anat4/'
+file_name=root+'/sub-OAS30434_ses-d0054_T1w.nii.gz.npz'
 file_name2='C:/Users\douce\Desktop\MIT Fall 2018/6.869 Machine Vision\Final Project/oasis-scripts/scans/OAS30065_MR_d2009/anat4'+'/sub-OAS30065_ses-d2009_T1w.JSON'
-img=nibabel.load(file_name2)
+# img=nibabel.load(file_name)
 # print(type(file_name))
-# img = np.load(file_name)
-# img = img['data']
-# img_data=img[0][0]
+img = np.load(file_name)
+img = img['data']
+img_data=img[0][0]
+print(img_data.shape)
 # print(img[0][1])
-# volume=img_data
-# #volume = (img_data * 255 / np.max(img_data)).astype('uint8')
-# multi_slice_viewer(volume)
-# #plt.imshow(volume[:,:,0],cmap='gray')
-# plt.show()
+volume=img_data
+#volume = (img_data * 255 / np.max(img_data)).astype('uint8')
+multi_slice_viewer(volume)
+# plt.imshow(volume,cmap='gray')
+plt.show()
 
