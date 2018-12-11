@@ -64,8 +64,7 @@ def run():
                 print('Current learning rate: ' + str(param_group['lr']))
             model.train()
 
-            for batch_num,(inputs, labels) in enumerate(training_generator):
-                print("batch num:", batch_num)
+            for batch_num,(inputs, labels) in enumerate(training_generator,1):
                 inputs = inputs.unsqueeze(1).to(device=device,dtype=torch.float)
                 labels = labels.long().to(device)
 
