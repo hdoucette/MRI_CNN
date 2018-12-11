@@ -29,15 +29,13 @@ class Dataset(data.Dataset):
         ID = self.list_IDs[index]
 
         # Load data and get label
-        try:
-            X = np.load(os.path.join('./data/train/',ID))['data'][0][0]
-            y = np.load(os.path.join('./data/train/',ID))['data'][0][1]
-            X = torch.from_numpy(X)
-            y = torch.from_numpy(y)
+        X = np.load(os.path.join('./data/train/',ID))['data'][0][0]
+        y = np.load(os.path.join('./data/train/',ID))['data'][0][1]
+        X = torch.from_numpy(X)
+        y = torch.from_numpy(y)
 
-            return X, y
-        except:
-            print("error loading file")
+        return X, y
+
 
 
 
