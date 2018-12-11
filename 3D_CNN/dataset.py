@@ -16,9 +16,11 @@ class DataLoader(object):
     @classmethod
     def concat(cls, dataset='train', records = -1):
         num=0
-        denom=len(os.listdir(train_root)[0:records])
-        for i in os.listdir(train_root)[0:records]:
-            sample=np.load(os.path.join(train_root,i))['data']
+        if dataset=='train': dir=train_root
+        else: dir=test_root
+        denom=len(os.listdir(dir)[0:records])
+        for i in os.listdir(dir)[0:records]:
+            sample=np.load(os.path.join(dir,i))['data']
             if sample[0][0].shape==(176,256,256):
                 if num==0:
                     sample_x=np.expand_dims(sample[0][0],0)
@@ -67,7 +69,7 @@ class DataLoader(object):
 
     @classmethod
     def batch_data(cls, train_data, train_labels, batch_size):
-        """ Simple sequential chunks of data """
+        """ Simple sequential chunks of data, only for training"""
         for batch in range(int(np.ceil(train_data.shape[0] / batch_size))):
             start = batch_size * batch
             end = start + batch_size

@@ -45,6 +45,7 @@ def run():
     write_outputs=[]
     epoch = 1
     csv_path = os.path.join(root, 'MRI_CNN/3D_CNN/Model/epoch_loss.csv')
+    epoch_loss = []
     with open(csv_path, 'w', newline='') as writeFile:
         writer = csv.writer(writeFile)
         while epoch <= num_epochs:
@@ -74,14 +75,14 @@ def run():
                         ))
                     running_loss = 0.0
                     gc.collect()
-            epoch_loss=[epoch,running_loss]
+            epoch_loss.append([epoch,running_loss])
             gc.collect()
             # save after every epoch
             torch.save(model.state_dict(), "Model/model.%d" % epoch)
 
             epoch=epoch+1
 
-            writer.writerow(epoch_loss)
+        writer.writerows(line for line in epoch_loss)
 
 
 print('Starting training')
