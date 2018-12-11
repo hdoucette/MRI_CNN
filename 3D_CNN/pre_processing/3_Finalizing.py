@@ -53,7 +53,7 @@ for list in [train_list,test_list]:
             #load image
             img = nibabel.load(path)
             img = img.get_data()
-            if img.shape==(176, 240, 256):
+            if img.shape==(176, 256, 256):
                 num=num+1
                 #append image and label to netdata
                 netdata.append([img, labelar])

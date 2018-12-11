@@ -21,7 +21,6 @@ class DataLoader(object):
         denom=len(os.listdir(dir)[0:records])
         for i in os.listdir(dir)[0:records]:
             sample=np.load(os.path.join(dir,i))['data']
-            print(sample[0][0].shape)
             if sample[0][0].shape==(176,256,256):
                 if num==0:
                     sample_x=np.expand_dims(sample[0][0],0)
