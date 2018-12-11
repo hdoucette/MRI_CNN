@@ -14,11 +14,12 @@ class MRI_CNN(nn.Module):
             nn.BatchNorm3d(32),
             nn.LeakyReLU(inplace=True),
             nn.MaxPool3d(kernel_size=(2,2,2), stride=2, padding=0),
+            nn.Conv3d(32, 64, kernel_size=(2, 2, 2), stride=2, padding=0),
+            nn.BatchNorm3d(64),
+            nn.LeakyReLU(inplace=True),
+            nn.MaxPool3d(kernel_size=(2, 2, 2), stride=2, padding=0),
             nn.Dropout(.5))
-        self.classifier=nn.Sequential(nn.Linear(72000,1024),
-            # nn.LeakyReLU(inplace=True),
-            # nn.Dropout(.5),
-            # nn.Linear(8000, 1024),
+        self.classifier=nn.Sequential(nn.Linear(1152,1024),
             nn.BatchNorm1d(1024),
             nn.LeakyReLU(inplace=True),
             nn.Dropout(.5),
@@ -36,7 +37,7 @@ class MRI_CNN(nn.Module):
 
     def forward(self, x):
         x = self.features(x)
-        x = x.view(x.size(0), 72000)
+        x = x.view(x.size(0),int(1152))
         x = self.classifier(x)
         return x
 

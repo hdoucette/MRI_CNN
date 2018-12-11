@@ -23,11 +23,11 @@ def load_categories():
         categories.append(line)
     return categories
 
-def load_model(model_name='MRI_CNN'):
+def load_model(model_name='MRI_CNN',epoch=20):
     """load the pre-trained model"""
     try:
         model = MRI_CNN()
-        model_path = './Model/model.3'
+        model_path = './Model/model.{0}'.format(epoch)
     except:
         raise NotImplementedError(model_name + ' is not implemented here')
 
@@ -38,7 +38,7 @@ def load_model(model_name='MRI_CNN'):
     return model
 
 
-def main():
+def main(epoch=30):
     # load classification categories
     categories = load_categories()
 
@@ -46,11 +46,11 @@ def main():
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     # load model and set to evaluation mode
-    model=load_model()
+    model=load_model(epoch)
     model.to(device)
     model.eval()
 
-    csv_path = os.path.join(root,'MRI_CNN/3D_CNN/Model/test_loss.csv')
+    csv_path = os.path.join(root,'MRI_CNN/3D_CNN/Model/test_loss_epoch{0}.csv'.format(epoch))
     with open(csv_path, 'w', newline='') as writeFile:
         loss=[]
 

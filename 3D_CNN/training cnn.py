@@ -22,13 +22,13 @@ else: root='/home/ubuntu'
 PD_Path=os.path.join(root,'MRI_CNN/3D_CNN/data')
 
 x,y=DataLoader.load_testing(dataset='train', records=500)
-print(x.shape,y.shape)
+# print(x.shape,y.shape)
 
 def run():
     # Parameters
     num_epochs = 100
     output_period = 2
-    batch_size = 5
+    batch_size = 20
 
     # setup the device for running
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
