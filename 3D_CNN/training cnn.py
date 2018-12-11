@@ -81,7 +81,7 @@ def run():
 
             epoch=epoch+1
 
-            writer.writerows(epoch_loss)
+            writer.writerow(epoch_loss)
 
 
 print('Starting training')
