@@ -53,14 +53,15 @@ for list in [train_list,test_list]:
             #load image
             img = nibabel.load(path)
             img = img.get_data()
-            num=num+1
-            #append image and label to netdata
-            netdata.append([img, labelar])
-            #save as compressed numpy array with array name = 'data'
-            img_path=PD_Path+'/{0}/{1}'.format(folder,img_name)
-            #print(img_path)
-            np.savez_compressed(img_path, data=netdata)
-            print(num, 'of',denom," is npz saved")
+            if img.shape==(176, 240, 256):
+                num=num+1
+                #append image and label to netdata
+                netdata.append([img, labelar])
+                #save as compressed numpy array with array name = 'data'
+                img_path=PD_Path+'/{0}/{1}'.format(folder,img_name)
+                #print(img_path)
+                np.savez_compressed(img_path, data=netdata)
+                print(num, 'of',denom," is npz saved")
         except:
             print(path,' could not be appended and saved as numpy array')
 
