@@ -44,8 +44,9 @@ def run():
     model = MRI_CNN()
     model = model.to(device)
 
-    weights = torch.DoubleTensor([1.0, 2.0, 10.0])
-    criterion = nn.CrossEntropyLoss(weight=weights).to(device)
+    #weights = torch.FloatTensor([1.0, 2.0, 10.0])
+    # criterion = nn.CrossEntropyLoss(weight=weights).to(device)
+    criterion = nn.CrossEntropyLoss().to(device)
 
     # TODO: May Need adjustment
     optimizer = optim.Adam(model.parameters(), lr=1e-3, weight_decay=.01)
@@ -66,7 +67,7 @@ def run():
             for batch_num,(inputs, labels) in enumerate(training_generator):
                 inputs = inputs.unsqueeze(1).to(device)
                 labels = labels.long().to(device)
-                print(inputs.shape)
+                print("batch num:",batch_num)
                 optimizer.zero_grad()
                 outputs = model(inputs)
                 loss = criterion(outputs,labels)
@@ -78,7 +79,7 @@ def run():
                 #print('Running Loss:',running_loss)
                 if batch_num % output_period == 0:
                     print('[%d:%.2f] loss: %.3f' % (
-                        epoch, batch_num*1.00/(len(training_generator)/params['batch_size']),
+                        epoch, batch_num*1.00/(len(partition)/params['batch_size']),
                         running_loss/output_period
                         ))
                     running_loss = 0.0
