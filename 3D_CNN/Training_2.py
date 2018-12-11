@@ -44,9 +44,9 @@ def run():
     model = MRI_CNN()
     model = model.to(device)
 
-    #weights = torch.FloatTensor([1.0, 2.0, 10.0])
-    # criterion = nn.CrossEntropyLoss(weight=weights).to(device)
-    criterion = nn.CrossEntropyLoss().to(device)
+    weights = torch.LongTensor([1.0, 2.0, 10.0])
+    criterion = nn.CrossEntropyLoss(weight=weights).to(device)
+    # criterion = nn.CrossEntropyLoss().to(device)
 
     # TODO: May Need adjustment
     optimizer = optim.Adam(model.parameters(), lr=1e-3, weight_decay=.01)
