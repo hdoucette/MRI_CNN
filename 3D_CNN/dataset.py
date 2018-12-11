@@ -3,12 +3,40 @@ from torchvision import datasets, transforms
 import os
 import numpy as np
 import torch.utils.data as utils
+from torch.utils import data
+
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 data_root = './data/'
 train_root = data_root + 'train'
 test_root = data_root + 'test'
+
+
+class Dataset(data.Dataset):
+  'Characterizes a dataset for PyTorch'
+  def __init__(self, list_IDs):
+        'Initialization'
+        self.list_IDs = list_IDs
+
+  def __len__(self):
+        'Denotes the total number of samples'
+        return len(self.list_IDs)
+
+  def __getitem__(self, index):
+        'Generates one sample of data'
+        # Select sample
+        ID = self.list_IDs[index]
+
+        # Load data and get label
+        X = np.load('./data/train/' + ID['data'][0][0])
+        y = np.load('./data/train/' + ID['data'][0][1])
+        X = torch.from_numpy(X)
+        y = torch.from_numpy(y)
+
+        return X, y
+
+
 
 
 class DataLoader(object):
@@ -79,6 +107,10 @@ class DataLoader(object):
             else:
                 yield batch, (train_data[start:end], \
                       train_labels[start:end])
+
+
+
+
 
 
 # x,y=DataLoader.load_testing(dataset='train', records=-1)

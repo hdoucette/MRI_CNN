@@ -2,7 +2,7 @@ import os
 import csv
 from sys import platform
 import torch
-from dataset import DataLoader
+from dataset import DataLoader, Dataset
 import gc
 from torch.autograd import Variable
 import torch
