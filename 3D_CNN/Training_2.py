@@ -31,6 +31,7 @@ def run():
               'num_workers': 4}
 
     num_epochs=100
+    output_period=5
     partition = os.listdir('./data/train')
 
     # Generators
@@ -43,7 +44,7 @@ def run():
     model = MRI_CNN()
     model = model.to(device)
 
-    weights = torch.FloatTensor([1.0, 2.0, 10.0])
+    weights = torch.DoubleTensor([1.0, 2.0, 10.0])
     criterion = nn.CrossEntropyLoss(weight=weights).to(device)
 
     # TODO: May Need adjustment
@@ -62,9 +63,10 @@ def run():
                 print('Current learning rate: ' + str(param_group['lr']))
             model.train()
 
-            for inputs, labels in training_generator:
+            for batch_num,(inputs, labels) in enumerate(training_generator):
                 inputs = inputs.unsqueeze(1).to(device)
                 labels = labels.long().to(device)
+                print(inputs.shape)
                 optimizer.zero_grad()
                 outputs = model(inputs)
                 loss = criterion(outputs,labels)
@@ -76,7 +78,7 @@ def run():
                 #print('Running Loss:',running_loss)
                 if batch_num % output_period == 0:
                     print('[%d:%.2f] loss: %.3f' % (
-                        epoch, batch_num*1.00/(len(x)/batch_size),
+                        epoch, batch_num*1.00/(len(training_generator)/params['batch_size']),
                         running_loss/output_period
                         ))
                     running_loss = 0.0
