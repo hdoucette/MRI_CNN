@@ -44,7 +44,7 @@ def run():
     model = MRI_CNN()
     model = model.to(device)
 
-    weights = torch.LongTensor([1.0, 2.0, 10.0])
+    weights = torch.FloatTensor([1.0, 2.0, 10.0])
     criterion = nn.CrossEntropyLoss(weight=weights).to(device)
     # criterion = nn.CrossEntropyLoss().to(device)
 
@@ -65,9 +65,10 @@ def run():
             model.train()
 
             for batch_num,(inputs, labels) in enumerate(training_generator):
+                print("batch num:", batch_num)
                 inputs = inputs.unsqueeze(1).to(device=device,dtype=torch.float)
                 labels = labels.long().to(device)
-                print("batch num:",batch_num)
+
                 optimizer.zero_grad()
                 outputs = model(inputs)
                 loss = criterion(outputs,labels)
