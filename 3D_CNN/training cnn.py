@@ -43,7 +43,6 @@ def run():
     scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[7, 12], gamma=0.1)
 
     write_outputs=[]
-    epoch_loss=[]
     epoch = 1
     csv_path = os.path.join(root, 'MRI_CNN/3D_CNN/Model/epoch_loss.csv')
     with open(csv_path, 'w', newline='') as writeFile:
@@ -75,14 +74,14 @@ def run():
                         ))
                     running_loss = 0.0
                     gc.collect()
-            epoch_loss.append([epoch,running_loss])
+            epoch_loss=[epoch,running_loss]
             gc.collect()
             # save after every epoch
             torch.save(model.state_dict(), "Model/model.%d" % epoch)
 
             epoch=epoch+1
 
-        writer.writerows(line for line in epoch_loss)
+            writer.writerows(epoch_loss)
 
 
 print('Starting training')
