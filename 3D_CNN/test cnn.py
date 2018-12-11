@@ -27,7 +27,7 @@ def load_model(model_name='MRI_CNN'):
     """load the pre-trained model"""
     try:
         model = MRI_CNN()
-        model_path = './Model/model.30'
+        model_path = './Model/model.3'
     except:
         raise NotImplementedError(model_name + ' is not implemented here')
 
