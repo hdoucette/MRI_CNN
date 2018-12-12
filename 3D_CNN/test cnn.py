@@ -88,10 +88,10 @@ def main(epoch=20):
 
         writer = csv.writer(writeFile)
         writer.writerows(line for line in loss)
-        writer.writerow(["TP:", num_true_pos/n])
-        writer.writerow(["FP:", num_false_pos / n])
-        writer.writerow(["TN:", num_true_neg / n])
-        writer.writerow(["FN:", num_false_neg / n])
+        writer.writerow(["TP:", num_true_pos/(num_true_pos + num_false_neg)])
+        writer.writerow(["FP:", num_false_pos /(num_false_pos + num_true_neg)])
+        writer.writerow(["TN:", num_true_neg / (num_false_pos + num_true_neg)])
+        writer.writerow(["FN:", num_false_neg / (num_true_pos + num_false_neg)])
 
 
 main()
