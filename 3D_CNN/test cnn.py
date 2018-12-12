@@ -12,7 +12,7 @@ if platform=='win32':
 else: root='/home/ubuntu'
 
 data_root = './data/'
-test_root = data_root + 'test'
+test_root = data_root + 'test_noStrip'
 
 datanp=[]                               #images
 truenp=[]                               #labels
@@ -23,7 +23,7 @@ def load_categories():
         categories.append(line)
     return categories
 
-def load_model(model_name='MRI_CNN',epoch=30):
+def load_model(model_name='MRI_CNN',epoch=50):
     """load the pre-trained model"""
     try:
         model = MRI_CNN()
@@ -38,7 +38,7 @@ def load_model(model_name='MRI_CNN',epoch=30):
     return model
 
 
-def main(epoch=20):
+def main(epoch=50):
     # load classification categories
     categories = load_categories()
 
