@@ -23,7 +23,7 @@ def load_categories():
         categories.append(line)
     return categories
 
-def load_model(model_name='MRI_CNN',epoch=75):
+def load_model(model_name='MRI_CNN',epoch=8):
     """load the pre-trained model"""
     try:
         model = MRI_CNN()
@@ -53,7 +53,11 @@ def main(epoch=30):
     csv_path = os.path.join(root,'MRI_CNN/3D_CNN/Model/test_loss_epoch{0}.csv'.format(epoch))
     with open(csv_path, 'w', newline='') as writeFile:
         loss=[]
-
+        num_true_pos=0
+        num_true_neg=0
+        num_false_pos=0
+        num_false_neg=0
+        n=0
         # load the image
         for file in os.listdir(test_root):
             data = np.load(os.path.join(test_root, file))
@@ -73,11 +77,22 @@ def main(epoch=30):
                 print(prediction)
                 prediction = prediction.to(device)
                 _, cls = torch.max(prediction, dim=1)
-
-                print("The predicted category is ", cls.data.cpu().numpy()[0])
+                prediction=cls.data.cpu().numpy()[0]
+                print("The predicted category is ", prediction)
                 print("The real category is", label)
-                loss.append([cls.data.cpu().numpy()[0],label])
+                loss.append([prediction,label])
+                if prediction>0 and label>0: num_true_pos=num_true_pos+1
+                elif prediction>0 and label==0: num_false_pos=num_false_pos+1
+                elif prediction == 0 and label == 0: num_true_neg = num_true_neg + 1
+                elif prediction==0 and label>0: num_false_neg=num_false_neg+1
+                n=n+1
+
         writer = csv.writer(writeFile)
         writer.writerows(line for line in loss)
+        writer.writerow(["TP:", num_true_pos/n])
+        writer.writerow(["FP:", num_false_pos / n])
+        writer.writerow(["TN:", num_true_neg / n])
+        writer.writerow(["FN:", num_false_neg / n])
+
 
 main()
