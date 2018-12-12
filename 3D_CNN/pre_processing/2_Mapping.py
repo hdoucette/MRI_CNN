@@ -25,7 +25,7 @@ for file in os.listdir(os.path.join(file_path)):
     for scan in os.listdir(file_path_2):
         scan_path=os.path.join(file_path_2,scan)
         for image in os.listdir(scan_path):
-            if image.endswith('T1w.nii.gz'):
+            if image.endswith('T1w_stripped.nii.gz'):
                 new_path=os.path.join(scan_path,image)
                 image_paths.append([new_path,image,diagnosis])
 
