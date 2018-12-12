@@ -1,10 +1,7 @@
 import os
 import csv
 from sys import platform
-#from Visualization import *
-import matplotlib.pyplot as plt
 import pandas as pd
-import numpy as np
 from sklearn.model_selection import train_test_split
 
 if platform=='win32':
@@ -40,14 +37,4 @@ test_path=os.path.join(root,'MRI_CNN/3D_CNN/data/test_data.csv')
 with open(test_path, 'w',newline= '') as writeFile:
      writer = csv.writer(writeFile)
      writer.writerows(path for path in test)
-
-
-
-
-# #test images
-# img=nibabel.load(image_paths[0])                         #loading the image
-# img_data=img.get_data()                                                     #accessing image array
-# multi_slice_viewer(img_data)
-# plt.show()
-
 

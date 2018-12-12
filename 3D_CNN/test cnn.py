@@ -1,6 +1,4 @@
 import os
-import tensorflow as tf
-import tflearn
 import numpy as np
 from sys import platform
 from CNN_Model import *
@@ -32,7 +30,6 @@ def load_model(model_name='MRI_CNN',epoch=50):
         raise NotImplementedError(model_name + ' is not implemented here')
 
     checkpoint = torch.load(model_path, map_location='cpu')
-    #print(checkpoint)
     model.load_state_dict(checkpoint)
 
     return model

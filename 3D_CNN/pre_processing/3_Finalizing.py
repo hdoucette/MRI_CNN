@@ -1,14 +1,10 @@
 import os
 import pandas as pd
 import numpy as np
-import skimage
-from skimage import transform
 import nibabel
 from sys import platform
 import csv
-import matplotlib.pyplot as plt
 
-# from skimage.viewer import ImageViewer
 
 def getdata(path,file):
     file_path=os.path.join(path,file)
@@ -29,7 +25,8 @@ denom=len(train_list)+len(test_list)
 
 label_path=os.path.join(PD_Path,'train_data.csv')
 labels_df=pd.read_csv(label_path,names=['path','diagnosis'])
-#
+
+
 #labeling and object formation
 num=0
 for list in [train_list,test_list]:

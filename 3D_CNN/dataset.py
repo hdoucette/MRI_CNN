@@ -39,7 +39,7 @@ class Dataset(data.Dataset):
 
 
 
-
+##For small subset of samples can load all at once using class below
 class DataLoader(object):
     data=[]
     @classmethod
@@ -108,23 +108,3 @@ class DataLoader(object):
             else:
                 yield batch, (train_data[start:end], \
                       train_labels[start:end])
-
-
-
-
-
-
-# x,y=DataLoader.load_testing(dataset='train', records=-1)
-# print(y)
-
-
-# for batch_num, (data_batch, label_batch) in DataLoader.batch_data(x,y,5):
-#      print(batch_num,data_batch.shape)
-
-# ##Test Visualization
-# import pre_processing.Visualisation
-# volume=x[0,:,:]
-# volume = (volume * 255 / np.max(volume)).astype('uint8')
-# multi_slice_viewer(volume)
-# #plt.imshow(volume[:,:,0],cmap='gray')
-# plt.show()

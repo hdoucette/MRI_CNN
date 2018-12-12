@@ -1,5 +1,5 @@
 ##This program removes uploaded scans that will not be part of training or testing
-#to free up space on disk
+#to free up disk space
 
 import os
 import nipype

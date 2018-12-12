@@ -1,10 +1,8 @@
 import os
 import csv
 from sys import platform
-import torch
 from dataset import DataLoader, Dataset
 import gc
-from torch.autograd import Variable
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -20,11 +18,6 @@ def run():
         root = 'C:/Users/douce/Desktop/MIT Fall 2018/6.869 Machine Vision/Final Project/'
     else:
         root = '/home/ubuntu'
-
-    # Get paths
-    PD_Path = os.path.join(root, 'MRI_CNN/3D_CNN/data')
-
-    # print(x.shape,y.shape)
 
     params = {'batch_size': 20,
               'shuffle': True,
@@ -46,13 +39,11 @@ def run():
 
     weights = torch.FloatTensor([1.0, 2.0, 10.0])
     criterion = nn.CrossEntropyLoss(weight=weights).to(device)
-    # criterion = nn.CrossEntropyLoss().to(device)
 
     # TODO: May Need adjustment
     optimizer = optim.Adam(model.parameters(), lr=1e-3, weight_decay=.01)
-    scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[7, 12], gamma=0.1)
+    # scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[7, 12], gamma=0.1)
 
-    write_outputs=[]
     epoch = 1
     csv_path = os.path.join(root, 'MRI_CNN/3D_CNN/Model/epoch_loss.csv')
     epoch_loss = []
@@ -76,7 +67,6 @@ def run():
 
                 optimizer.step()
                 running_loss += loss.item()
-                #print('Running Loss:',running_loss)
                 if batch_num % output_period == 0:
                     print('[%d:%.2f] loss: %.3f' % (
                         epoch, batch_num*1.00/(len(partition)/params['batch_size']),
