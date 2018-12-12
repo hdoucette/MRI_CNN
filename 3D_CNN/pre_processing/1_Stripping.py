@@ -27,7 +27,6 @@ def skull_strip_all():
                             mybet = nipype.interfaces.fsl.BET(in_file=iFile,
                                                       out_file=os.path.join(scan_path,image + '_stripped.nii.gz'),
                                                       frac=0.30)
-
                             mybet.run()  # executing the brain extraction
                             print(file + ' is skull stripped')
                         except:

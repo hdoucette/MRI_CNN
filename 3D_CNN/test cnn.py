@@ -1,6 +1,4 @@
 import os
-import tensorflow as tf
-import tflearn
 import numpy as np
 from sys import platform
 from CNN_Model import *
@@ -12,7 +10,7 @@ if platform=='win32':
 else: root='/home/ubuntu'
 
 data_root = './data/'
-test_root = data_root + 'test'
+test_root = data_root + 'test_noStrip'
 
 datanp=[]                               #images
 truenp=[]                               #labels
@@ -23,7 +21,7 @@ def load_categories():
         categories.append(line)
     return categories
 
-def load_model(model_name='MRI_CNN',epoch=75):
+def load_model(model_name='MRI_CNN',epoch=50):
     """load the pre-trained model"""
     try:
         model = MRI_CNN()
@@ -32,13 +30,12 @@ def load_model(model_name='MRI_CNN',epoch=75):
         raise NotImplementedError(model_name + ' is not implemented here')
 
     checkpoint = torch.load(model_path, map_location='cpu')
-    #print(checkpoint)
     model.load_state_dict(checkpoint)
 
     return model
 
 
-def main(epoch=30):
+def main(epoch=10):
     # load classification categories
     categories = load_categories()
 
@@ -53,7 +50,11 @@ def main(epoch=30):
     csv_path = os.path.join(root,'MRI_CNN/3D_CNN/Model/test_loss_epoch{0}.csv'.format(epoch))
     with open(csv_path, 'w', newline='') as writeFile:
         loss=[]
-
+        num_true_pos=0
+        num_true_neg=0
+        num_false_pos=0
+        num_false_neg=0
+        n=0
         # load the image
         for file in os.listdir(test_root):
             data = np.load(os.path.join(test_root, file))
@@ -63,8 +64,7 @@ def main(epoch=30):
             label=data['data'][0][1]
             if img.shape==(176,256,256):
                 image = torch.from_numpy(img)
-
-                image = image.to(device)
+                image = image.to(device,dtype=torch.float)
                 inputs = image.unsqueeze(0).to(device)
                 inputs = inputs.unsqueeze(0).to(device)
 
@@ -73,11 +73,22 @@ def main(epoch=30):
                 print(prediction)
                 prediction = prediction.to(device)
                 _, cls = torch.max(prediction, dim=1)
-
-                print("The predicted category is ", cls.data.cpu().numpy()[0])
+                prediction=cls.data.cpu().numpy()[0]
+                print("The predicted category is ", prediction)
                 print("The real category is", label)
-                loss.append([cls.data.cpu().numpy()[0],label])
+                loss.append([prediction,label])
+                if prediction>0 and label>0: num_true_pos=num_true_pos+1
+                elif prediction>0 and label==0: num_false_pos=num_false_pos+1
+                elif prediction == 0 and label == 0: num_true_neg = num_true_neg + 1
+                elif prediction==0 and label>0: num_false_neg=num_false_neg+1
+                n=n+1
+
         writer = csv.writer(writeFile)
         writer.writerows(line for line in loss)
+        writer.writerow(["TP:", num_true_pos/(num_true_pos + num_false_neg)])
+        writer.writerow(["FP:", num_false_pos /(num_false_pos + num_true_neg)])
+        writer.writerow(["TN:", num_true_neg / (num_false_pos + num_true_neg)])
+        writer.writerow(["FN:", num_false_neg / (num_true_pos + num_false_neg)])
+
 
 main()

@@ -3,6 +3,8 @@ from torchvision import datasets, transforms
 import os
 import numpy as np
 import torch.utils.data as utils
+from torch.utils import data
+
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -11,6 +13,33 @@ train_root = data_root + 'train'
 test_root = data_root + 'test'
 
 
+class Dataset(data.Dataset):
+  'Characterizes a dataset for PyTorch'
+  def __init__(self, list_IDs):
+        'Initialization'
+        self.list_IDs = list_IDs
+
+  def __len__(self):
+        'Denotes the total number of samples'
+        return len(self.list_IDs)
+
+  def __getitem__(self, index):
+        'Generates one sample of data'
+        # Select sample
+        ID = self.list_IDs[index]
+
+        # Load data and get label
+        X = np.load(os.path.join('./data/train/',ID))['data'][0][0]
+        y = np.load(os.path.join('./data/train/',ID))['data'][0][1]
+        X = torch.from_numpy(X)
+        y = torch.from_numpy(y)
+
+        return X, y
+
+
+
+
+##For small subset of samples can load all at once using class below
 class DataLoader(object):
     data=[]
     @classmethod
@@ -79,19 +108,3 @@ class DataLoader(object):
             else:
                 yield batch, (train_data[start:end], \
                       train_labels[start:end])
-
-
-# x,y=DataLoader.load_testing(dataset='train', records=-1)
-# print(y)
-
-
-# for batch_num, (data_batch, label_batch) in DataLoader.batch_data(x,y,5):
-#      print(batch_num,data_batch.shape)
-
-# ##Test Visualization
-# import pre_processing.Visualisation
-# volume=x[0,:,:]
-# volume = (volume * 255 / np.max(volume)).astype('uint8')
-# multi_slice_viewer(volume)
-# #plt.imshow(volume[:,:,0],cmap='gray')
-# plt.show()
