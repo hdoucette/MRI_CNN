@@ -23,7 +23,7 @@ def load_categories():
         categories.append(line)
     return categories
 
-def load_model(model_name='MRI_CNN',epoch=50):
+def load_model(model_name='MRI_CNN',epoch=30):
     """load the pre-trained model"""
     try:
         model = MRI_CNN()
