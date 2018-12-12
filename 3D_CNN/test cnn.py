@@ -67,8 +67,7 @@ def main(epoch=20):
             label=data['data'][0][1]
             if img.shape==(176,256,256):
                 image = torch.from_numpy(img)
-
-                image = image.to(device)
+                image = image.to(device,dtype=torch.float)
                 inputs = image.unsqueeze(0).to(device)
                 inputs = inputs.unsqueeze(0).to(device)
 
