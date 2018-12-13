@@ -36,6 +36,8 @@ def load_model(model_name='MRI_CNN',epoch=50):
 
 
 def main(epoch=20):
+
+    print('epoch',epoch)
     # load classification categories
     categories = load_categories()
 
