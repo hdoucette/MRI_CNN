@@ -37,7 +37,7 @@ def run():
     model = MRI_CNN()
     model = model.to(device)
 
-    weights = torch.FloatTensor([1.0, 2.0, 10.0])
+    weights = torch.FloatTensor([1.0, 10.0, 20.0])
     criterion = nn.CrossEntropyLoss(weight=weights).to(device)
 
     # TODO: May Need adjustment

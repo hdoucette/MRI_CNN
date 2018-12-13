@@ -6,10 +6,10 @@ class MRI_CNN(nn.Module):
         super(MRI_CNN, self).__init__()
 
         self.features = nn.Sequential(
-            nn.Conv3d(1,16,kernel_size=(10,10,10),stride=2,padding=0),
+            nn.Conv3d(1,16,kernel_size=(8,8,8),stride=2,padding=0),
             nn.BatchNorm3d(16),
             nn.LeakyReLU(inplace=True),
-            nn.MaxPool3d(kernel_size=(2,2,2),stride=2,padding=0),
+            nn.MaxPool3d(kernel_size=(3,3,3),stride=2,padding=0),
             nn.Conv3d(16,32,kernel_size=(4,4,4),stride=2,padding=0),
             nn.BatchNorm3d(32),
             nn.LeakyReLU(inplace=True),
