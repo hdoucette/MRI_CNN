@@ -10,7 +10,7 @@ if platform=='win32':
 else: root='/home/ubuntu'
 
 data_root = './data/'
-test_root = data_root + 'test_noStrip'
+test_root = data_root + 'test'
 
 datanp=[]                               #images
 truenp=[]                               #labels
